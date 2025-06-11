@@ -1,21 +1,44 @@
-# Wiley Article Scraper
+# Wiley Academic Research Scraper
 
-A Node.js-based web scraping project that extracts article information from Wiley publications. The project consists of two main components: a link scraper and an article scraper.
+A Node.js-based web scraping project that extracts comprehensive academic research data from Wiley publications. The project is designed to gather detailed information about academic articles, including author profiles and contributions.
 
 ## Project Structure
 
 ```
 .
 ├── src/                    # Source code directory
-│   ├── linkScraper.js     # Scrapes article links from Wiley
-│   └── articleScraper.js  # Extracts article details from individual pages
-├── data/                   # Data storage directory
+│   ├── linkScraper.js     # Scrapes article links from Wiley search results
+│   ├── articleScraper.js  # Extracts detailed article and author information
+│   ├── runScraper.js      # Orchestrates the scraping process
+│   └── utils.js           # Utility functions
+├── data/                   # Input data directory
+│   └── keywords.csv       # Search keywords for different research areas
 ├── output/                 # Output directory for scraped data
-│   └── articles/          # Individual article JSON files
+│   ├── part1Links/        # JSON files containing article URLs
+│   └── author_csv/        # CSV files with detailed article and author data
 ├── node_modules/          # Project dependencies
 ├── package.json           # Project configuration and dependencies
-└── .env                   # Environment variables (not tracked in git)
+└── .gitignore            # Git ignore rules
 ```
+
+## Features
+
+- **Comprehensive Data Collection**:
+  - Article metadata (title, journal, DOI, publication date)
+  - Author information and profiles
+  - Author contributions and related works
+  - Full article URLs and references
+
+- **Advanced Scraping Capabilities**:
+  - Non-headless browser operation for monitoring
+  - Stealth mode to avoid detection
+  - URL tracking and logging
+  - Automatic retry and error handling
+
+- **Data Organization**:
+  - Structured JSON output for article links
+  - CSV format for detailed article and author data
+  - Organized by research areas and keywords
 
 ## Prerequisites
 
@@ -25,7 +48,12 @@ A Node.js-based web scraping project that extracts article information from Wile
 
 ## Setup
 
-1. Clone the repository
+1. Clone the repository:
+   ```bash
+   git clone [repository-url]
+   cd wiley
+   ```
+
 2. Install dependencies:
    ```bash
    npm install
@@ -33,50 +61,64 @@ A Node.js-based web scraping project that extracts article information from Wile
 
 ## Dependencies
 
-- `puppeteer`: Headless Chrome automation
+- `puppeteer`: Browser automation
 - `puppeteer-extra` & `puppeteer-extra-plugin-stealth`: Enhanced scraping capabilities
 - `dotenv`: Environment variable management
-- `csv-parser`: CSV file handling
-
-## Configuration
-
-The scraper is configured to:
-- Run in non-headless mode (visible browser)
-- Use the local Chrome installation at `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`
-- Set a default timeout of 30 seconds
-- Use stealth mode to avoid detection
+- `csv-parser` & `csv-writer`: CSV file handling
+- `loglevel`: Logging utility
 
 ## Usage
 
-The project consists of two main scripts:
+The project consists of two main components:
 
-1. **Link Scraper** (`src/linkScraper.js`)
-   - Scrapes article links from Wiley publications
-   - Saves links to `links.json`
+1. **Link Scraper** (`src/linkScraper.js`):
+   ```bash
+   npm run scrape-links
+   ```
+   - Scrapes article links from Wiley search results
+   - Uses keywords from `data/keywords.csv`
+   - Saves results as JSON files in `output/part1Links/`
 
-2. **Article Scraper** (`src/articleScraper.js`)
-   - Processes each article URL from `links.json`
-   - Extracts:
-     - Title
-     - Authors
-     - Abstract
-   - Saves individual article data as JSON files in `output/articles/`
-   - Creates a merged CSV file (`output/merged.csv`) with all article data
+2. **Article Scraper** (`src/articleScraper.js`):
+   ```bash
+   node src/articleScraper.js
+   ```
+   - Processes article URLs from `output/part1Links/`
+   - Extracts detailed article and author information
+   - Saves results as CSV files in `output/author_csv/`
 
-## Output
+## Output Format
 
-The scraper generates two types of output:
+### Article Links (JSON)
+```json
+[
+  "https://onlinelibrary.wiley.com/doi/...",
+  "https://onlinelibrary.wiley.com/doi/..."
+]
+```
 
-1. Individual JSON files in `output/articles/` containing:
-   - Article URL
-   - Title
-   - Authors
-   - Abstract
-
-2. A merged CSV file (`output/merged.csv`) containing all article data in a tabular format
+### Article Data (CSV)
+- Title
+- Journal
+- DOI
+- Publication Date
+- Author Name
+- Author Email
+- Author Profile URL
+- Author Contributions
+- Article URL
 
 ## Notes
 
-- The scraper runs in non-headless mode by default (browser is visible)
+- The scraper runs in non-headless mode by default for monitoring
 - Uses stealth mode to avoid detection
-- Make sure to respect Wiley's terms of service and rate limits when scraping 
+- Implements rate limiting and delays between requests
+- Respects Wiley's terms of service and rate limits
+
+## Contributing
+
+Feel free to submit issues and enhancement requests!
+
+## License
+
+This project is licensed under the ISC License. 
